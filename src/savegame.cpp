@@ -53,7 +53,7 @@ extern std::map<std::string, std::list<input_event>> quick_shortcuts_map;
  * Changes that break backwards compatibility should bump this number, so the game can
  * load a legacy format loader.
  */
-const int savegame_version = 31;
+const int savegame_version = 32;
 
 /*
  * This is a global set by detected version header in .sav, maps.txt, or overmap.
@@ -81,6 +81,7 @@ void game::serialize( std::ostream &fout )
     json.member( "turn", calendar::turn );
     json.member( "calendar_start", calendar::start_of_cataclysm );
     json.member( "game_start", calendar::start_of_game );
+    json.member( "start_year", calendar::start_year );
     json.member( "initial_season", static_cast<int>( calendar::initial_season ) );
     json.member( "auto_travel_mode", auto_travel_mode );
     json.member( "run_mode", static_cast<int>( safe_mode ) );
@@ -191,6 +192,16 @@ void game::unserialize( std::istream &fin )
 
         if( !data.read( "game_start", calendar::start_of_game ) ) {
             calendar::start_of_game = calendar::start_of_cataclysm;
+        }
+
+        if( !data.read( "start_year", calendar::start_year ) ) {
+            // The cataclysm occurs the year after the current year.
+            cata::optional<std::tm> ltime = local_time();
+            if( ltime ) {
+                calendar::start_year = ltime.value().tm_year + 1901;
+            } else {
+                calendar::start_year = 2011;
+            }
         }
 
         load_map( project_combine( com, lev ) );

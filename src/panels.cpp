@@ -996,6 +996,7 @@ static void draw_limb2( avatar &u, const catacurses::window &w )
     mvwprintz( w, point( 22, 0 ), c_light_gray, _( "STM" ) );
     mvwprintz( w, point( 26, 0 ), stamina.second, stamina.first );
 
+    // Print power
     mvwprintz( w, point( 22, 1 ), c_light_gray, _( "PWR" ) );
     const auto pwr = power_stat( u );
     mvwprintz( w, point( 31 - utf8_width( pwr.second ), 1 ), pwr.first, pwr.second );

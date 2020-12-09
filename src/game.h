@@ -1130,4 +1130,7 @@ namespace cata_event_dispatch
 void avatar_moves( const tripoint &old_abs_pos, const avatar &u, const map &m );
 } // namespace cata_event_dispatch
 
+// Handles platform-specific code to obtain system time
+cata::optional<std::tm> local_time();
+
 #endif // CATA_SRC_GAME_H

@@ -56,6 +56,9 @@ enum moon_phase {
  */
 namespace calendar
 {
+/** An array containing three-letter month names. */
+extern const std::array<std::string, 12> month_names;
+
 /**
  * Predicate to handle rate-limiting. Returns `true` after every @p event_frequency duration.
  */
@@ -103,6 +106,11 @@ float season_from_default_ratio();
 
 /** Returns the translated name of the season (with first letter being uppercase). */
 std::string name_season( season_type s );
+
+/** The calendar year, month, and day of turn 0*/
+extern int start_year;
+extern const int start_month;
+extern const int start_day;
 
 extern time_point start_of_cataclysm;
 extern time_point start_of_game;
@@ -570,5 +578,6 @@ enum class weekdays : int {
 };
 
 weekdays day_of_week( const time_point &p );
+std::string date_string( const time_point &p );
 
 #endif // CATA_SRC_CALENDAR_H

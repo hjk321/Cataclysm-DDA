@@ -238,31 +238,14 @@ bool main_menu::is_easter( int day, int month, int year )
 
 holiday main_menu::get_holiday_from_time()
 {
-    bool success = false;
+    cata::optional<std::tm> ltime = local_time();
 
-    std::tm local_time;
-    std::time_t current_time = std::time( nullptr );
+    if( ltime ) {
 
-    /* necessary to pass LGTM, as threadsafe version of localtime differs by platform */
-#if defined(_WIN32)
-
-    errno_t err = localtime_s( &local_time, &current_time );
-    if( err == 0 ) {
-        success = true;
-    }
-
-#else
-
-    success = !!localtime_r( &current_time, &local_time );
-
-#endif
-
-    if( success ) {
-
-        const int month = local_time.tm_mon + 1;
-        const int day = local_time.tm_mday;
-        const int wday = local_time.tm_wday;
-        const int year = local_time.tm_year + 1900;
+        const int month = ltime.value().tm_mon + 1;
+        const int day = ltime.value().tm_mday;
+        const int wday = ltime.value().tm_wday;
+        const int year = ltime.value().tm_year + 1900;
 
         /* check date against holidays */
         if( month == 1 && day == 1 ) {

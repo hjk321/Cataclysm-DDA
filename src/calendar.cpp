@@ -4,6 +4,7 @@
 #include <array>
 #include <cmath>
 #include <cstddef>
+#include <ctime>
 #include <limits>
 
 #include "cata_assert.h"
@@ -17,6 +18,16 @@
 /** How much light moon provides per lit-up quarter (Full-moon light is four times this value) */
 static constexpr double moonlight_per_quarter = 2.25;
 
+const std::array<std::string, 12> month_names = {{
+        translate_marker( "Jan" ), translate_marker( "Feb" )
+        translate_marker( "Mar" ), translate_marker( "Apr" )
+        translate_marker( "May" ), translate_marker( "Jun" )
+        translate_marker( "Jul" ), translate_marker( "Aug" )
+        translate_marker( "Sep" ), translate_marker( "Oct" )
+        translate_marker( "Nov" ), translate_marker( "Dec" )
+    }
+};
+
 // Divided by 100 to prevent overflowing when converted to moves
 const int calendar::INDEFINITELY_LONG( std::numeric_limits<int>::max() / 100 );
 const time_duration calendar::INDEFINITELY_LONG_DURATION(
@@ -26,6 +37,14 @@ static int cur_season_length = 1;
 
 const time_point calendar::before_time_starts = time_point::from_turn( -1 );
 const time_point calendar::turn_zero = time_point::from_turn( 0 );
+
+// Defines the calendar date of turn_zero.
+// Month and day was determined to make the evacuee scenario start on Apr 30.
+// Start year is determined on world creation (IRL year + 1)
+// 2011 is a failsafe -- the year after the original Cataclysm release.
+int calendar::start_year = 2011;
+const int calendar::start_month = 4;
+const int calendar::start_day = 25;
 
 time_point calendar::start_of_cataclysm = calendar::turn_zero;
 time_point calendar::start_of_game = calendar::turn_zero;
@@ -445,31 +464,45 @@ std::string to_string_time_of_day( const time_point &p )
 
 weekdays day_of_week( const time_point &p )
 {
-    /* Design rationale:
-     * <kevingranade> here's a question
-     * <kevingranade> what day of the week is day 0?
-     * <wito> Sunday
-     * <GlyphGryph> Why does it matter?
-     * <GlyphGryph> For like where people are and stuff?
-     * <wito> 7 is also Sunday
-     * <kevingranade> NOAA weather forecasts include day of week
-     * <GlyphGryph> Also by day0 do you mean the day people start day 0
-     * <GlyphGryph> Or actual day 0
-     * <kevingranade> good point, turn 0
-     * <GlyphGryph> So day 5
-     * <wito> Oh, I thought we were talking about week day numbering in general.
-     * <wito> Day 5 is a thursday, I think.
-     * <wito> Nah, Day 5 feels like a thursday. :P
-     * <wito> Which would put the apocalpyse on a saturday?
-     * <Starfyre> must be a thursday.  I was never able to get the hang of those.
-     * <ZChris13> wito: seems about right to me
-     * <wito> kevingranade: add four for thursday. ;)
-     * <kevingranade> sounds like consensus to me
-     * <kevingranade> Thursday it is */
-    const int day_since_cataclysm = to_days<int>( p - calendar::turn_zero );
-    static const weekdays start_day = weekdays::THURSDAY;
-    const int result = day_since_cataclysm + static_cast<int>( start_day );
+    // Determine weekday for turn zero
+    int y = calendar::start_year;
+    static int t[] = {0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4};
+    y -= calendar::start_month < 3;
+    static int start_weekday = ( y + y / 4 - y / 100 + y / 400 + t[calendar::start_month - 1] +
+                                 calendar::start_day ) % 7;
+
+    const int day_since_turn_zero = to_days<int>( p - calendar::turn_zero );
+    const int result = day_since_turn_zero + static_cast<int>( start_weekday );
     return static_cast<weekdays>( result % 7 );
+}
+
+std::string date_string( const time_point &p )
+{
+    // Algorithm source: https://stackoverflow.com/questions/2344330/
+    // Convert turn zero to a "standard" day integer
+    static int y = calendar::start_year;
+    static int m = calendar::start_month;
+    static int d = calendar::start_day;
+    m = ( m + 9 ) % 12;
+    y = y - m / 10;
+    static int g = 365 * y + y / 4 - y / 100 + y / 400 + ( m * 306 + 5 ) / 10 + ( d - 1 );
+
+    g += to_days<int>( p - calendar::turn_zero );
+
+    // Now convert it back
+    y = ( 10000 * g + 14780 ) / 3652425;
+    static int ddd = g - ( 365 * y + y / 4 - y / 100 + y / 400 );
+    if( ddd < 0 ) {
+        y = y - 1;
+        ddd = g - ( 365 * y + y / 4 - y / 100 + y / 400 );
+    }
+    static int mi = ( 100 * ddd + 52 ) / 3060;
+    static int mm = ( mi + 2 ) % 12 + 1;
+    y = y + ( mi + 2 ) / 12;
+    static int dd = ddd - ( mi * 306 + 5 ) / 10 + 1;
+
+    // Turn y, mm, and dd into a string
+    return month_names[mm - 1] + " " + to_string( dd ) + " " + to_string( y );
 }
 
 bool calendar::eternal_season()

@@ -12047,6 +12047,14 @@ void game::autosave()
 
 void game::start_calendar()
 {
+    // The cataclysm occurs the year after the current year.
+    cata::optional<std::tm> ltime = local_time();
+    if( ltime ) {
+        calendar::start_year = ltime.value().tm_year + 1901;
+    } else {
+        calendar::start_year = 2011;
+    }
+
     const bool scen_season = scen->has_flag( "SPR_START" ) || scen->has_flag( "SUM_START" ) ||
                              scen->has_flag( "AUT_START" ) || scen->has_flag( "WIN_START" ) ||
                              scen->has_flag( "SUM_ADV_START" );
@@ -12397,4 +12405,30 @@ timed_event_manager &get_timed_events()
 weather_manager &get_weather()
 {
     return g->weather;
+}
+
+cata::optional<std::tm> local_time()
+{
+    bool success = false;
+
+    std::tm local_time;
+    std::time_t current_time = std::time( nullptr );
+
+    // necessary to pass LGTM, as threadsafe version of localtime differs by platform
+#if defined(_WIN32)
+
+    errno_t err = localtime_s( &local_time, &current_time );
+    if( err == 0 ) {
+        success = true;
+    }
+
+#else
+
+    success = !!localtime_r( &current_time, &local_time );
+
+#endif
+
+    if( !success )
+        return {};
+    return local_time;
 }
