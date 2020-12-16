@@ -1347,6 +1347,10 @@ void avatar::reset_stats()
             mod_dex_bonus( it.get_mod( "DEX", reduced ) );
             mod_per_bonus( it.get_mod( "PER", reduced ) );
             mod_int_bonus( it.get_mod( "INT", reduced ) );
+            mod_str_fake( it.get_mod( "STR_FAKE", reduced ) );
+            mod_dex_fake( it.get_mod( "DEX_FAKE", reduced ) );
+            mod_per_fake( it.get_mod( "PER_FAKE", reduced ) );
+            mod_int_fake( it.get_mod( "INT_FAKE", reduced ) );
         }
     }
 

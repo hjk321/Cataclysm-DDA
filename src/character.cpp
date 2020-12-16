@@ -441,6 +441,10 @@ Character::Character() :
     dex_bonus = 0;
     per_bonus = 0;
     int_bonus = 0;
+    str_fake = 0;
+    dex_fake = 0;
+    per_fake = 0;
+    int_fake = 0;
     healthy = 0;
     healthy_mod = 0;
     hunger = 0;
@@ -4753,6 +4757,23 @@ int Character::get_int_bonus() const
     return int_bonus;
 }
 
+int Character::get_str_perceived() const
+{
+    return std::max( 0, get_str() + str_fake );
+}
+int Character::get_dex_perceived() const
+{
+    return std::max( 0, get_dex() + dex_fake );
+}
+int Character::get_per_perceived() const
+{
+    return std::max( 0, get_per() + per_fake );
+}
+int Character::get_int_perceived() const
+{
+    return std::max( 0, get_int() + int_fake );
+}
+
 static int get_speedydex_bonus( const int dex )
 {
     static const std::string speedydex_min_dex( "SPEEDYDEX_MIN_DEX" );
@@ -4835,6 +4856,39 @@ void Character::mod_int_bonus( int nint )
 {
     int_bonus += nint;
     int_cur = std::max( 0, int_max + int_bonus );
+}
+
+void Character::set_str_fake( int nstr )
+{
+    str_fake = nstr;
+}
+void Character::set_dex_fake( int ndex )
+{
+    dex_fake = ndex;
+}
+void Character::set_per_fake( int nper )
+{
+    per_fake = nper;
+}
+void Character::set_int_fake( int nint )
+{
+    int_fake = nint;
+}
+void Character::mod_str_fake( int nstr )
+{
+    str_fake += nstr;
+}
+void Character::mod_dex_fake( int ndex )
+{
+    dex_fake += ndex;
+}
+void Character::mod_per_fake( int nper )
+{
+    per_fake += nper;
+}
+void Character::mod_int_fake( int nint )
+{
+    int_fake += nint;
 }
 
 void Character::print_health() const

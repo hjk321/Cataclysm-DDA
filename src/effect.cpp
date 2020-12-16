@@ -259,6 +259,12 @@ bool effect_type::load_mod_data( const JsonObject &jo, const std::string &member
         extract_effect( j, mod_data, "int_mod",          member, "INT",      "min" );
         extract_effect( j, mod_data, "speed_mod",        member, "SPEED",    "min" );
 
+        // Fake stats
+        extract_effect( j, mod_data, "str_fake",         member, "STR_FAKE", "min" );
+        extract_effect( j, mod_data, "dex_fake",         member, "DEX_FAKE", "min" );
+        extract_effect( j, mod_data, "per_fake",         member, "PER_FAKE", "min" );
+        extract_effect( j, mod_data, "int_fake",         member, "INT_FAKE", "min" );
+
         // Then pain
         extract_effect( j, mod_data, "pain_amount",      member, "PAIN",     "amount" );
         extract_effect( j, mod_data, "pain_min",         member, "PAIN",     "min" );

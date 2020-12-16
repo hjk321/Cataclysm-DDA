@@ -115,56 +115,60 @@ static std::pair<nc_color, std::string> str_string( const avatar &p )
 {
     nc_color clr;
 
-    if( p.get_str() == p.get_str_base() ) {
+    if( p.get_str_perceived() == p.get_str_base() ) {
         clr = c_white;
-    } else if( p.get_str() > p.get_str_base() ) {
+    } else if( p.get_str_perceived() > p.get_str_base() ) {
         clr = c_green;
-    } else if( p.get_str() < p.get_str_base() ) {
+    } else if( p.get_str_perceived() < p.get_str_base() ) {
         clr = c_red;
     }
-    return std::make_pair( clr, _( "Str " ) + ( p.get_str() < 100 ? to_string( p.get_str() ) : "++" ) );
+    return std::make_pair( clr, _( "Str " ) + ( p.get_str_perceived() < 100 ? to_string(
+                               p.get_str_perceived() ) : "++" ) );
 }
 
 static std::pair<nc_color, std::string> dex_string( const avatar &p )
 {
     nc_color clr;
 
-    if( p.get_dex() == p.get_dex_base() ) {
+    if( p.get_dex_perceived() == p.get_dex_base() ) {
         clr = c_white;
-    } else if( p.get_dex() > p.get_dex_base() ) {
+    } else if( p.get_dex_perceived() > p.get_dex_base() ) {
         clr = c_green;
-    } else if( p.get_dex() < p.get_dex_base() ) {
+    } else if( p.get_dex_perceived() < p.get_dex_base() ) {
         clr = c_red;
     }
-    return std::make_pair( clr, _( "Dex " ) + ( p.get_dex() < 100 ? to_string( p.get_dex() ) : "++" ) );
+    return std::make_pair( clr, _( "Dex " ) + ( p.get_dex_perceived() < 100 ? to_string(
+                               p.get_dex_perceived() ) : "++" ) );
 }
 
 static std::pair<nc_color, std::string> int_string( const avatar &p )
 {
     nc_color clr;
 
-    if( p.get_int() == p.get_int_base() ) {
+    if( p.get_int_perceived() == p.get_int_base() ) {
         clr = c_white;
-    } else if( p.get_int() > p.get_int_base() ) {
+    } else if( p.get_int_perceived() > p.get_int_base() ) {
         clr = c_green;
-    } else if( p.get_int() < p.get_int_base() ) {
+    } else if( p.get_int_perceived() < p.get_int_base() ) {
         clr = c_red;
     }
-    return std::make_pair( clr, _( "Int " ) + ( p.get_int() < 100 ? to_string( p.get_int() ) : "++" ) );
+    return std::make_pair( clr, _( "Int " ) + ( p.get_int_perceived() < 100 ? to_string(
+                               p.get_int_perceived() ) : "++" ) );
 }
 
 static std::pair<nc_color, std::string> per_string( const avatar &p )
 {
     nc_color clr;
 
-    if( p.get_per() == p.get_per_base() ) {
+    if( p.get_per_perceived() == p.get_per_base() ) {
         clr = c_white;
-    } else if( p.get_per() > p.get_per_base() ) {
+    } else if( p.get_per_perceived() > p.get_per_base() ) {
         clr = c_green;
-    } else if( p.get_per() < p.get_per_base() ) {
+    } else if( p.get_per_perceived() < p.get_per_base() ) {
         clr = c_red;
     }
-    return std::make_pair( clr, _( "Per " ) + ( p.get_per() < 100 ? to_string( p.get_per() ) : "++" ) );
+    return std::make_pair( clr, _( "Per " ) + ( p.get_per_perceived() < 100 ? to_string(
+                               p.get_per_perceived() ) : "++" ) );
 }
 
 static nc_color focus_color( int focus )
@@ -1008,21 +1012,21 @@ static void draw_stats( avatar &u, const catacurses::window &w )
     werase( w );
     nc_color stat_clr = str_string( u ).first;
     mvwprintz( w, point_zero, c_light_gray, _( "STR" ) );
-    int stat = u.get_str();
+    int stat = u.get_str_perceived();
     mvwprintz( w, point( stat < 10 ? 5 : 4, 0 ), stat_clr,
                stat < 100 ? to_string( stat ) : "99+" );
     stat_clr = dex_string( u ).first;
-    stat = u.get_dex();
+    stat = u.get_dex_perceived();
     mvwprintz( w, point( 9, 0 ), c_light_gray, _( "DEX" ) );
     mvwprintz( w, point( stat < 10 ? 14 : 13, 0 ), stat_clr,
                stat < 100 ? to_string( stat ) : "99+" );
     stat_clr = int_string( u ).first;
-    stat = u.get_int();
+    stat = u.get_int_perceived();
     mvwprintz( w, point( 17, 0 ), c_light_gray, _( "INT" ) );
     mvwprintz( w, point( stat < 10 ? 22 : 21, 0 ), stat_clr,
                stat < 100 ? to_string( stat ) : "99+" );
     stat_clr = per_string( u ).first;
-    stat = u.get_per();
+    stat = u.get_per_perceived();
     mvwprintz( w, point( 25, 0 ), c_light_gray, _( "PER" ) );
     mvwprintz( w, point( stat < 10 ? 30 : 29, 0 ), stat_clr,
                stat < 100 ? to_string( stat ) : "99+" );
@@ -1306,13 +1310,13 @@ static void draw_stat_narrow( avatar &u, const catacurses::window &w )
     mvwprintz( w, point( 19, 1 ), c_light_gray, _( "Per  :" ) );
 
     nc_color stat_clr = str_string( u ).first;
-    mvwprintz( w, point( 8, 0 ), stat_clr, "%s", u.get_str() );
+    mvwprintz( w, point( 8, 0 ), stat_clr, "%s", u.get_str_perceived() );
     stat_clr = int_string( u ).first;
-    mvwprintz( w, point( 8, 1 ), stat_clr, "%s", u.get_int() );
+    mvwprintz( w, point( 8, 1 ), stat_clr, "%s", u.get_int_perceived() );
     stat_clr = dex_string( u ).first;
-    mvwprintz( w, point( 26, 0 ), stat_clr, "%s", u.get_dex() );
+    mvwprintz( w, point( 26, 0 ), stat_clr, "%s", u.get_dex_perceived() );
     stat_clr = per_string( u ).first;
-    mvwprintz( w, point( 26, 1 ), stat_clr, "%s", u.get_per() );
+    mvwprintz( w, point( 26, 1 ), stat_clr, "%s", u.get_per_perceived() );
 
     std::pair<nc_color, std::string> pwr_pair = power_stat( u );
     mvwprintz( w, point( 1, 2 ), c_light_gray, _( "Power:" ) );
@@ -1332,13 +1336,13 @@ static void draw_stat_wide( avatar &u, const catacurses::window &w )
     mvwprintz( w, point( 16, 1 ), c_light_gray, _( "Per  :" ) );
 
     nc_color stat_clr = str_string( u ).first;
-    mvwprintz( w, point( 8, 0 ), stat_clr, "%s", u.get_str() );
+    mvwprintz( w, point( 8, 0 ), stat_clr, "%s", u.get_str_perceived() );
     stat_clr = int_string( u ).first;
-    mvwprintz( w, point( 8, 1 ), stat_clr, "%s", u.get_int() );
+    mvwprintz( w, point( 8, 1 ), stat_clr, "%s", u.get_int_perceived() );
     stat_clr = dex_string( u ).first;
-    mvwprintz( w, point( 23, 0 ), stat_clr, "%s", u.get_dex() );
+    mvwprintz( w, point( 23, 0 ), stat_clr, "%s", u.get_dex_perceived() );
     stat_clr = per_string( u ).first;
-    mvwprintz( w, point( 23, 1 ), stat_clr, "%s", u.get_per() );
+    mvwprintz( w, point( 23, 1 ), stat_clr, "%s", u.get_per_perceived() );
 
     std::pair<nc_color, std::string> pwr_pair = power_stat( u );
     mvwprintz( w, point( 31, 0 ), c_light_gray, _( "Power:" ) );

@@ -412,6 +412,12 @@ class Character : public Creature, public visitable<Character>
         int int_cur;
         int per_cur;
 
+        // Adds (or subtracts) to actual stats for "perceived" stats.
+        int str_fake;
+        int dex_fake;
+        int int_fake;
+        int per_fake;
+
         // The prevalence of getter, setter, and mutator functions here is partially
         // a result of the slow, piece-wise migration of the player class upwards into
         // the character class. As enough logic is moved upwards to fully separate
@@ -433,6 +439,12 @@ class Character : public Creature, public visitable<Character>
         virtual int get_per_bonus() const;
         virtual int get_int_bonus() const;
 
+        // Returns current stat plus (or minus) any fake stat modifiers
+        int get_str_perceived() const;
+        int get_dex_perceived() const;
+        int get_per_perceived() const;
+        int get_int_perceived() const;
+
         int get_speed() const override;
 
         // Penalty modifiers applied for ranged attacks due to low stats
@@ -448,6 +460,15 @@ class Character : public Creature, public visitable<Character>
         virtual void mod_dex_bonus( int ndex );
         virtual void mod_per_bonus( int nper );
         virtual void mod_int_bonus( int nint );
+
+        void set_str_fake( int nstr );
+        void set_dex_fake( int ndex );
+        void set_per_fake( int nper );
+        void set_int_fake( int nint );
+        void mod_str_fake( int nstr );
+        void mod_dex_fake( int ndex );
+        void mod_per_fake( int nper );
+        void mod_int_fake( int nint );
 
         // Prints message(s) about current health
         void print_health() const;

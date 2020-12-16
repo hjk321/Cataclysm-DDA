@@ -337,6 +337,11 @@ Valid arguments:
 "int_mod"           - Positive values raises stat, negative values lowers stat
 "speed_mod"         - Positive values raises stat, negative values lowers stat
 
+"str_fake"           - Positive values raises PERCEIVED stat, negative values lowers PERCEIVED stat
+"dex_fake"           - Positive values raises PERCEIVED stat, negative values lowers PERCEIVED stat
+"per_fake"           - Positive values raises PERCEIVED stat, negative values lowers PERCEIVED stat
+"int_fake"           - Positive values raises PERCEIVED stat, negative values lowers PERCEIVED stat
+
 "pain_amount"       - Positives raise pain, negatives don't make anything. Don't make it too high.
 "pain_min"          - Minimal amount of pain, certain effect will give/take
 "pain_max"          - if 0 or missing value will be exactly "pain_min"
